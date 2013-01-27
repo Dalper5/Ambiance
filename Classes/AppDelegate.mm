@@ -1,6 +1,6 @@
 /*
  
-     File: aurioTouchAppDelegate.mm
+     File: AppDelegate.mm
  Abstract: n/a
   Version: 1.0
  
@@ -47,11 +47,11 @@
  
  */
 
-#import "aurioTouchAppDelegate.h"
+#import "AppDelegate.h"
 #import "AudioUnit/AudioUnit.h"
 #import "CAXException.h"                    
 
-@implementation aurioTouchAppDelegate
+@implementation AppDelegate
 
 // value, a, r, g, b
 GLfloat colorLevels[] = {
@@ -123,7 +123,7 @@ void rioInterruptionListener(void *inClientData, UInt32 inInterruption)
     try {
         printf("Session interrupted! --- %s ---", inInterruption == kAudioSessionBeginInterruption ? "Begin Interruption" : "End Interruption");
         
-        aurioTouchAppDelegate *THIS = (aurioTouchAppDelegate*)inClientData;
+        AppDelegate *THIS = (AppDelegate*)inClientData;
         
         if (inInterruption == kAudioSessionEndInterruption) {
             // make sure we are again the active session
@@ -147,7 +147,7 @@ void propListener(	void *                  inClientData,
                   UInt32                  inDataSize,
                   const void *            inData)
 {
-	aurioTouchAppDelegate *THIS = (aurioTouchAppDelegate*)inClientData;
+	AppDelegate *THIS = (AppDelegate*)inClientData;
 	if (inID == kAudioSessionProperty_AudioRouteChange)
 	{
 		try {
@@ -233,7 +233,7 @@ static OSStatus	PerformThru(
 							UInt32 						inNumberFrames, 
 							AudioBufferList 			*ioData)
 {
-	aurioTouchAppDelegate *THIS = (aurioTouchAppDelegate *)inRefCon;
+	AppDelegate *THIS = (AppDelegate *)inRefCon;
 	OSStatus err = AudioUnitRender(THIS->rioUnit, ioActionFlags, inTimeStamp, 1, inNumberFrames, ioData);
 	if (err) { printf("PerformThru: error %d\n", (int)err); return err; }
 	

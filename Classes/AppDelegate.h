@@ -81,7 +81,7 @@ inline double linearInterp(double valA, double valB, double fract)
 	return valA + ((valB - valA) * fract);
 }
 
-@interface aurioTouchAppDelegate : NSObject <UIApplicationDelegate, EAGLViewDelegate> {
+@interface AppDelegate : UIResponder <UIApplicationDelegate, EAGLViewDelegate> {
 	IBOutlet UIWindow*			window;
 	IBOutlet EAGLView*			view;
 	
