@@ -1,64 +1,25 @@
-/*
- 
-     File: aurioTouchAppDelegate.mm
- Abstract: n/a
-  Version: 1.0
- 
- Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
- Inc. ("Apple") in consideration of your agreement to the following
- terms, and your use, installation, modification or redistribution of
- this Apple software constitutes acceptance of these terms.  If you do
- not agree with these terms, please do not use, install, modify or
- redistribute this Apple software.
- 
- In consideration of your agreement to abide by the following terms, and
- subject to these terms, Apple grants you a personal, non-exclusive
- license, under Apple's copyrights in this original Apple software (the
- "Apple Software"), to use, reproduce, modify and redistribute the Apple
- Software, with or without modifications, in source and/or binary forms;
- provided that if you redistribute the Apple Software in its entirety and
- without modifications, you must retain this notice and the following
- text and disclaimers in all such redistributions of the Apple Software.
- Neither the name, trademarks, service marks or logos of Apple Inc. may
- be used to endorse or promote products derived from the Apple Software
- without specific prior written permission from Apple.  Except as
- expressly stated in this notice, no other rights or licenses, express or
- implied, are granted by Apple herein, including but not limited to any
- patent rights that may be infringed by your derivative works or by other
- works in which the Apple Software may be incorporated.
- 
- The Apple Software is provided by Apple on an "AS IS" basis.  APPLE
- MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION
- THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS
- FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND
- OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS.
- 
- IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL
- OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION,
- MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED
- AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE),
- STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
- POSSIBILITY OF SUCH DAMAGE.
- 
- Copyright (C) 2011 Apple Inc. All Rights Reserved.
- 
- 
- */
+//
+//  AppDelegate.m
+//  Ambiance
+//
+//  Created by dalperovich on 1/23/13.
+//  Copyright (c) 2013 Ambiance. All rights reserved.
+//
 
-#import "aurioTouchAppDelegate.h"
+#import "AppDelegate.h"
+
 #import "AudioUnit/AudioUnit.h"
-#import "CAXException.h"                    
+#import "CAXException.h"
 
-@implementation aurioTouchAppDelegate
+@implementation AppDelegate
+
 
 // value, a, r, g, b
 GLfloat colorLevels[] = {
-    0., 1., 0., 0., 0., 
-    .333, 1., .7, 0., 0., 
-    .667, 1., 0., 0., 1., 
-    1., 1., 0., 1., 1., 
+    0., 1., 0., 0., 0.,
+    .333, 1., .7, 0., 0.,
+    .667, 1., 0., 0., 1.,
+    1., 1., 0., 1., 1.,
 };
 
 @synthesize window;
@@ -123,7 +84,7 @@ void rioInterruptionListener(void *inClientData, UInt32 inInterruption)
     try {
         printf("Session interrupted! --- %s ---", inInterruption == kAudioSessionBeginInterruption ? "Begin Interruption" : "End Interruption");
         
-        aurioTouchAppDelegate *THIS = (aurioTouchAppDelegate*)inClientData;
+        AppDelegate *THIS = (AppDelegate*)inClientData;
         
         if (inInterruption == kAudioSessionEndInterruption) {
             // make sure we are again the active session
@@ -147,11 +108,11 @@ void propListener(	void *                  inClientData,
                   UInt32                  inDataSize,
                   const void *            inData)
 {
-	aurioTouchAppDelegate *THIS = (aurioTouchAppDelegate*)inClientData;
+	AppDelegate *THIS = (AppDelegate*)inClientData;
 	if (inID == kAudioSessionProperty_AudioRouteChange)
 	{
 		try {
-            UInt32 isAudioInputAvailable; 
+            UInt32 isAudioInputAvailable;
             UInt32 size = sizeof(isAudioInputAvailable);
             XThrowIfError(AudioSessionGetProperty(kAudioSessionProperty_AudioInputAvailable, &size, &isAudioInputAvailable), "couldn't get AudioSession AudioInputAvailable property value");
             
@@ -191,11 +152,11 @@ void propListener(	void *                  inClientData,
 			size = sizeof(CFStringRef);
 			XThrowIfError(AudioSessionGetProperty(kAudioSessionProperty_AudioRoute, &size, &newRoute), "couldn't get new audio route");
 			if (newRoute)
-			{	
+			{
 				CFShow(newRoute);
 				if (CFStringCompare(newRoute, CFSTR("Headset"), NULL) == kCFCompareEqualTo) // headset plugged in
 				{
-					colorLevels[0] = .3;				
+					colorLevels[0] = .3;
 					colorLevels[5] = .5;
 				}
 				else if (CFStringCompare(newRoute, CFSTR("Receiver"), NULL) == kCFCompareEqualTo) // headset plugged in
@@ -205,7 +166,7 @@ void propListener(	void *                  inClientData,
 					colorLevels[10] = .667;
 					colorLevels[15] = 1.0;
 					
-				}			
+				}
 				else
 				{
 					colorLevels[0] = 0;
@@ -226,14 +187,14 @@ void propListener(	void *                  inClientData,
 #pragma mark -RIO Render Callback
 
 static OSStatus	PerformThru(
-							void						*inRefCon, 
-							AudioUnitRenderActionFlags 	*ioActionFlags, 
-							const AudioTimeStamp 		*inTimeStamp, 
-							UInt32 						inBusNumber, 
-							UInt32 						inNumberFrames, 
+							void						*inRefCon,
+							AudioUnitRenderActionFlags 	*ioActionFlags,
+							const AudioTimeStamp 		*inTimeStamp,
+							UInt32 						inBusNumber,
+							UInt32 						inNumberFrames,
 							AudioBufferList 			*ioData)
 {
-	aurioTouchAppDelegate *THIS = (aurioTouchAppDelegate *)inRefCon;
+	AppDelegate *THIS = (AppDelegate *)inRefCon;
 	OSStatus err = AudioUnitRender(THIS->rioUnit, ioActionFlags, inTimeStamp, 1, inNumberFrames, ioData);
 	if (err) { printf("PerformThru: error %d\n", (int)err); return err; }
 	
@@ -288,7 +249,7 @@ static OSStatus	PerformThru(
 		if (THIS->fftBufferManager == NULL) return noErr;
 		
 		if (THIS->fftBufferManager->NeedsNewAudioData())
-			THIS->fftBufferManager->GrabAudioData(ioData); 
+			THIS->fftBufferManager->GrabAudioData(ioData);
 	}
 	if (THIS->mute == YES) { SilenceData(ioData); }
 	
@@ -298,7 +259,7 @@ static OSStatus	PerformThru(
 #pragma mark-
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application
-{	
+{
 	// Turn off the idle timer, since this app doesn't rely on constant touch input
 	application.idleTimerDisabled = YES;
 	
@@ -312,7 +273,7 @@ static OSStatus	PerformThru(
 	inputProc.inputProcRefCon = self;
     
 	CFURLRef url = NULL;
-	try {	
+	try {
 		url = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, CFStringRef([[NSBundle mainBundle] pathForResource:@"button_press" ofType:@"caf"]), kCFURLPOSIXPathStyle, false);
 		XThrowIfError(AudioServicesCreateSystemSoundID(url, &buttonPressSound), "couldn't create button tap alert sound");
 		CFRelease(url);
@@ -478,7 +439,7 @@ static OSStatus	PerformThru(
 
 
 - (void)dealloc
-{	
+{
 	delete[] dcFilter;
 	delete fftBufferManager;
     if (drawABL)
@@ -524,7 +485,7 @@ static OSStatus	PerformThru(
 	
 	// Allocated memory needed for the bitmap context
 	spriteData = (GLubyte *) calloc(texH, texW * 4);
-	// Uses the bitmatp creation function provided by the Core Graphics framework. 
+	// Uses the bitmatp creation function provided by the Core Graphics framework.
 	spriteContext = CGBitmapContextCreate(spriteData, texW, texH, 8, texW * 4, CGImageGetColorSpace(img), kCGImageAlphaPremultipliedLast);
 	
 	// Translate and scale the context to draw the image upside-down (conflict in flipped-ness between GL textures and CG contexts)
@@ -538,7 +499,7 @@ static OSStatus	PerformThru(
 	
 	// Use OpenGL ES to generate a name for the texture.
 	glGenTextures(1, texName);
-	// Bind the texture name. 
+	// Bind the texture name.
 	glBindTexture(GL_TEXTURE_2D, *texName);
 	// Speidfy a 2D texture image, provideing the a pointer to the image data in memory
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texW, texH, 0, GL_RGBA, GL_UNSIGNED_BYTE, spriteData);
@@ -604,8 +565,8 @@ static OSStatus	PerformThru(
 	
 	spectrumRect = CGRectMake(10., 10., 460., 300.);
 	
-	// The bit buffer for the texture needs to be 512 pixels, because OpenGL textures are powers of 
-	// two in either dimensions. Our texture is drawing a strip of 300 vertical pixels on the screen, 
+	// The bit buffer for the texture needs to be 512 pixels, because OpenGL textures are powers of
+	// two in either dimensions. Our texture is drawing a strip of 300 vertical pixels on the screen,
 	// so we need to step up to 512 (the nearest power of 2 greater than 300).
 	texBitBuffer = (UInt32 *)(malloc(sizeof(UInt32) * 512));
 	
@@ -613,7 +574,7 @@ static OSStatus	PerformThru(
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);	
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	NSUInteger texCount = ceil(CGRectGetWidth(spectrumRect) / (CGFloat)SPECTRUM_BAR_WIDTH);
 	GLuint *texNames;
@@ -680,7 +641,7 @@ static OSStatus	PerformThru(
 		// Draw our background oscilloscope screen
 		const GLfloat vertices[] = {
 			0., 0.,
-			512., 0., 
+			512., 0.,
 			0.,  512.,
 			512.,  512.,
 		};
@@ -704,7 +665,7 @@ static OSStatus	PerformThru(
 		// Draw our buttons
 		const GLfloat vertices[] = {
 			0., 0.,
-			112, 0., 
+			112, 0.,
 			0.,  64,
 			112,  64,
 		};
@@ -737,7 +698,7 @@ static OSStatus	PerformThru(
 	
 	
 	if (displayMode == aurioTouchDisplayModeOscilloscopeFFT)
-	{			
+	{
 		if (fftBufferManager->HasNewAudioData())
 		{
 			if (fftBufferManager->ComputeFFT(l_fftData))
@@ -857,7 +818,7 @@ static OSStatus	PerformThru(
 			firstTex->texName = thisTex->nextTex->texName;
 			free(thisTex->nextTex);
 			thisTex->nextTex = NULL;
-		} 
+		}
 		thisTex = thisTex->nextTex;
 	} while (thisTex);
 }
@@ -903,7 +864,7 @@ static OSStatus	PerformThru(
 			if ( (*thisLevel <= interpVal) && (*nextLevel >= interpVal) )
 			{
 				double fract = (interpVal - *thisLevel) / (*nextLevel - *thisLevel);
-				newPx = 
+				newPx =
 				((UInt8)(255. * linearInterp(thisLevel[1], nextLevel[1], fract)) << 24)
 				|
 				((UInt8)(255. * linearInterp(thisLevel[2], nextLevel[2], fract)) << 16)
@@ -958,23 +919,23 @@ static OSStatus	PerformThru(
 	glTranslatef(spectrumRect.origin.x + spectrumRect.size.width, spectrumRect.origin.y, 0.);
 	
 	GLfloat quadCoords[] = {
-		0., 0., 
-		SPECTRUM_BAR_WIDTH, 0., 
-		0., 512., 
-		SPECTRUM_BAR_WIDTH, 512., 
+		0., 0.,
+		SPECTRUM_BAR_WIDTH, 0.,
+		0., 512.,
+		SPECTRUM_BAR_WIDTH, 512.,
 	};
 	
 	GLshort texCoords[] = {
-		0, 0, 
-		1, 0, 
+		0, 0,
+		1, 0,
 		0, 1,
-		1, 1, 
+		1, 1,
 	};
 	
 	glVertexPointer(2, GL_FLOAT, 0, quadCoords);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glTexCoordPointer(2, GL_SHORT, 0, texCoords);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);	
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	glColor4f(1., 1., 1., 1.);
 	
@@ -1088,5 +1049,6 @@ static OSStatus	PerformThru(
 		}
 	}
 }
+
 
 @end
