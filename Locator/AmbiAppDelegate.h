@@ -8,8 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AmbiAppDelegate : UIResponder <UIApplicationDelegate>
+//Add Location Framework
+#import <CoreLocation/CoreLocation.h>
+
+@interface AmbiAppDelegate : UIResponder <UIApplicationDelegate, CLLocationManagerDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
+
+//Add a location manager property to this app delegate
+@property (strong, nonatomic) CLLocationManager *locationManager;
+@property (nonatomic, strong) NSMutableArray *places;
 
 @end

@@ -24,6 +24,7 @@
 		1F9CD28C16ED5BA10058CEE2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F9CD26416ED5BA00058CEE2 /* Foundation.framework */; };
 		1F9CD29416ED5BA10058CEE2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1F9CD29216ED5BA10058CEE2 /* InfoPlist.strings */; };
 		1F9CD29716ED5BA10058CEE2 /* LocatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F9CD29616ED5BA10058CEE2 /* LocatorTests.m */; };
+		1F9CD2A116ED5CD00058CEE2 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F9CD2A016ED5CD00058CEE2 /* CoreLocation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +61,7 @@
 		1F9CD29316ED5BA10058CEE2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1F9CD29516ED5BA10058CEE2 /* LocatorTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LocatorTests.h; sourceTree = "<group>"; };
 		1F9CD29616ED5BA10058CEE2 /* LocatorTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LocatorTests.m; sourceTree = "<group>"; };
+		1F9CD2A016ED5CD00058CEE2 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +69,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1F9CD2A116ED5CD00058CEE2 /* CoreLocation.framework in Frameworks */,
 				1F9CD26316ED5BA00058CEE2 /* UIKit.framework in Frameworks */,
 				1F9CD26516ED5BA00058CEE2 /* Foundation.framework in Frameworks */,
 				1F9CD26716ED5BA00058CEE2 /* CoreGraphics.framework in Frameworks */,
@@ -108,6 +111,7 @@
 		1F9CD26116ED5BA00058CEE2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1F9CD2A016ED5CD00058CEE2 /* CoreLocation.framework */,
 				1F9CD26216ED5BA00058CEE2 /* UIKit.framework */,
 				1F9CD26416ED5BA00058CEE2 /* Foundation.framework */,
 				1F9CD26616ED5BA00058CEE2 /* CoreGraphics.framework */,
@@ -400,6 +404,7 @@
 				GCC_PREFIX_HEADER = "Locator/Locator-Prefix.pch";
 				INFOPLIST_FILE = "Locator/Locator-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -411,6 +416,7 @@
 				GCC_PREFIX_HEADER = "Locator/Locator-Prefix.pch";
 				INFOPLIST_FILE = "Locator/Locator-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

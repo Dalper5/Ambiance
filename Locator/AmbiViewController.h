@@ -8,6 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AmbiViewController : UIViewController
 
+@interface AmbiViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
+
+@property (nonatomic, strong) UITableView *myTableView;
+@property (nonatomic, strong) UIButton  *myButton;
+
+- (IBAction)Locate:(UIButton*)sender;
+    
 @end

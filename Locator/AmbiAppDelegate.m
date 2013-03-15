@@ -10,9 +10,58 @@
 
 @implementation AmbiAppDelegate
 
+@synthesize locationManager=_locationManager;
+@synthesize places=_places;
+
+#pragma mark - CLLocationManagerDelegate Methods
+-(void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation{
+    NSDate* eventDate = newLocation.timestamp;
+    NSTimeInterval howRecent = [eventDate timeIntervalSinceNow];
+    if (abs(howRecent) < 15.0)
+    {
+        //Location timestamp is within the last 15.0 seconds, let's use it!
+        if(newLocation.horizontalAccuracy<35.0){
+            //Location seems pretty accurate, let's use it!
+            NSLog(@"latitude %+.6f, longitude %+.6f\n",
+                  newLocation.coordinate.latitude,
+                  newLocation.coordinate.longitude);
+            NSLog(@"Horizontal Accuracy:%f", newLocation.horizontalAccuracy);
+            
+            //Optional: turn off location services once we've gotten a good location
+            //[manager stopUpdatingLocation];
+        }
+    }
+}
+
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Override point for customization after application launch.
+    //self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    //[self.window makeKeyAndVisible];
+    
+    //If object has not been created, create it.
+    if(self.locationManager==nil){
+        _locationManager=[[CLLocationManager alloc] init];
+        //I'm using ARC with this project so no need to release
+        
+        _locationManager.delegate=self;
+        
+        //Included in the prompt to use location services
+        _locationManager.purpose = @"We will try to tell you where you are if you get lost";
+        
+        
+        //The desired accuracy that you want, not guaranteed though
+        _locationManager.desiredAccuracy=kCLLocationAccuracyBest;
+        
+        //The distance in meters a device must move before an update event is triggered
+        _locationManager.distanceFilter=50;
+        self.locationManager=_locationManager;
+    }
+    
+    if([CLLocationManager locationServicesEnabled]){
+        [self.locationManager startUpdatingLocation];
+    }
+    
     return YES;
 }
 							
@@ -26,6 +75,8 @@
 {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    [self.locationManager stopUpdatingLocation];
+    [self.places removeAllObjects];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
