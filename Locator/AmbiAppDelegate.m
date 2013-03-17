@@ -7,11 +7,16 @@
 //
 
 #import "AmbiAppDelegate.h"
+#import "AmbiPlace.h"
+#import "AmbiPlaceDetails.h"
 
 @implementation AmbiAppDelegate
 
 @synthesize locationManager=_locationManager;
 @synthesize places=_places;
+@synthesize current_location=_current_location;
+@synthesize current_place = _current_place;
+
 
 #pragma mark - CLLocationManagerDelegate Methods
 -(void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation{
@@ -26,9 +31,51 @@
                   newLocation.coordinate.latitude,
                   newLocation.coordinate.longitude);
             NSLog(@"Horizontal Accuracy:%f", newLocation.horizontalAccuracy);
+
+ 
+            NSString *lat = [NSString stringWithFormat:@"%f", newLocation.coordinate.latitude];
+            NSString *longt = [NSString stringWithFormat:@"%f", newLocation.coordinate.longitude];
+            //NSString *gKey = @"AIzaSyC3G9bERz7ktJkqxvnnRx_Sb9ld8jKQErk";
+            //NSString *radius = @"100";
+            //NSString *pipe = @"|";
+            //NSString *e_pipe = [pipe stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            //NSString *type =@"restaurant";
+            //type = [type stringByAppendingString:e_pipe];
+            //type = [type stringByAppendingString:@"bar"];
+            NSString *placeString  = [NSString stringWithFormat:@"http://maps.googleapis.com/maps/api/geocode/json?latlng=%@,%@&sensor=true",lat,longt];
+            NSLog(@"request string: %@",placeString);
+            
+            NSURL *placeURL = [NSURL URLWithString:placeString];
+            NSMutableURLRequest *request=[NSMutableURLRequest requestWithURL:placeURL cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:5.0];
+            [request setHTTPMethod:@"GET"];
+            NSURLResponse* response;
+            NSError* error = nil;
+            
+            //Capturing server response
+            NSData* result = [NSURLConnection sendSynchronousRequest:request  returningResponse:&response       error:&error];
+            NSError *myError = nil;
+            NSDictionary *res = [NSJSONSerialization JSONObjectWithData:result options:NSJSONReadingMutableLeaves error:&myError];
+            
+                
+            NSArray *firstResultAddress = [[[res objectForKey:@"results"] objectAtIndex:0] objectForKey:@"address_components"];
+            
+    
+            NSString *countryName = [AmbiPlace addressComponent:@"country" inAddressArray:firstResultAddress ofType:@"short_name"];
+            NSString *currencySymbol = [AmbiLocation mapCountryToCurrency:countryName];
+  
+            NSLog(@"CurrencyCode: %@", countryName);
+            NSLog(@"Country Code: %@", currencySymbol);
+            
+            AmbiLocation *location = [[AmbiLocation alloc] init];
+            location.country = [[NSString alloc] initWithString:countryName];
+            location.currency = [[NSString alloc] initWithString:currencySymbol];
+            //Record location and figure out currency code
+            [location set:newLocation];
+            self.current_location = location;
             
             //Optional: turn off location services once we've gotten a good location
             //[manager stopUpdatingLocation];
+            
         }
     }
 }
@@ -60,6 +107,7 @@
     
     if([CLLocationManager locationServicesEnabled]){
         [self.locationManager startUpdatingLocation];
+        [self.current_location init];
     }
     
     return YES;

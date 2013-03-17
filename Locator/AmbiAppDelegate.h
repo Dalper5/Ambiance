@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AmbiLocation.h"
+#import "AmbiPlaceDetails.h"
 
 //Add Location Framework
 #import <CoreLocation/CoreLocation.h>
@@ -17,6 +19,8 @@
 
 //Add a location manager property to this app delegate
 @property (strong, nonatomic) CLLocationManager *locationManager;
-@property (nonatomic, strong) NSMutableArray *places;
+@property (strong, nonatomic) NSMutableArray *places;
+@property (strong, nonatomic) AmbiLocation *current_location;
+@property (strong, nonatomic) AmbiPlaceDetails *current_place;
 
 @end

@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1F7EBFF716F52E6000BB26E5 /* AmbiPlace.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F7EBFF616F52E6000BB26E5 /* AmbiPlace.m */; };
+		1F7EBFFA16F52E9400BB26E5 /* AmbiLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F7EBFF916F52E9400BB26E5 /* AmbiLocation.m */; };
+		1F7EBFFD16F52EC200BB26E5 /* AmbiPlaceDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F7EBFFC16F52EC200BB26E5 /* AmbiPlaceDetails.m */; };
 		1F9CD26316ED5BA00058CEE2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F9CD26216ED5BA00058CEE2 /* UIKit.framework */; };
 		1F9CD26516ED5BA00058CEE2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F9CD26416ED5BA00058CEE2 /* Foundation.framework */; };
 		1F9CD26716ED5BA00058CEE2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F9CD26616ED5BA00058CEE2 /* CoreGraphics.framework */; };
@@ -38,6 +41,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1F7EBFF516F52E6000BB26E5 /* AmbiPlace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmbiPlace.h; sourceTree = "<group>"; };
+		1F7EBFF616F52E6000BB26E5 /* AmbiPlace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AmbiPlace.m; sourceTree = "<group>"; };
+		1F7EBFF816F52E9400BB26E5 /* AmbiLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmbiLocation.h; sourceTree = "<group>"; };
+		1F7EBFF916F52E9400BB26E5 /* AmbiLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AmbiLocation.m; sourceTree = "<group>"; };
+		1F7EBFFB16F52EC200BB26E5 /* AmbiPlaceDetails.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmbiPlaceDetails.h; sourceTree = "<group>"; };
+		1F7EBFFC16F52EC200BB26E5 /* AmbiPlaceDetails.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AmbiPlaceDetails.m; sourceTree = "<group>"; };
 		1F9CD25F16ED5BA00058CEE2 /* Locator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Locator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1F9CD26216ED5BA00058CEE2 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		1F9CD26416ED5BA00058CEE2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -125,6 +134,12 @@
 			children = (
 				1F9CD27116ED5BA00058CEE2 /* AmbiAppDelegate.h */,
 				1F9CD27216ED5BA00058CEE2 /* AmbiAppDelegate.m */,
+				1F7EBFF516F52E6000BB26E5 /* AmbiPlace.h */,
+				1F7EBFF616F52E6000BB26E5 /* AmbiPlace.m */,
+				1F7EBFF816F52E9400BB26E5 /* AmbiLocation.h */,
+				1F7EBFF916F52E9400BB26E5 /* AmbiLocation.m */,
+				1F7EBFFB16F52EC200BB26E5 /* AmbiPlaceDetails.h */,
+				1F7EBFFC16F52EC200BB26E5 /* AmbiPlaceDetails.m */,
 				1F9CD27A16ED5BA00058CEE2 /* MainStoryboard_iPhone.storyboard */,
 				1F9CD27D16ED5BA00058CEE2 /* MainStoryboard_iPad.storyboard */,
 				1F9CD28016ED5BA00058CEE2 /* AmbiViewController.h */,
@@ -282,6 +297,9 @@
 				1F9CD26F16ED5BA00058CEE2 /* main.m in Sources */,
 				1F9CD27316ED5BA00058CEE2 /* AmbiAppDelegate.m in Sources */,
 				1F9CD28216ED5BA00058CEE2 /* AmbiViewController.m in Sources */,
+				1F7EBFF716F52E6000BB26E5 /* AmbiPlace.m in Sources */,
+				1F7EBFFA16F52E9400BB26E5 /* AmbiLocation.m in Sources */,
+				1F7EBFFD16F52EC200BB26E5 /* AmbiPlaceDetails.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -474,6 +492,7 @@
 				1F9CD29C16ED5BA10058CEE2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		1F9CD29D16ED5BA10058CEE2 /* Build configuration list for PBXNativeTarget "LocatorTests" */ = {
 			isa = XCConfigurationList;
@@ -482,6 +501,7 @@
 				1F9CD29F16ED5BA10058CEE2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

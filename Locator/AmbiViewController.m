@@ -8,6 +8,7 @@
 
 #import "AmbiViewController.h"
 #import "AmbiAppDelegate.h"
+#import "AmbiPlace.h"
 
 @interface AmbiViewController ()
 
@@ -67,22 +68,90 @@
         result = [tableView dequeueReusableCellWithIdentifier:TableViewCellIdentifier];
         if (result == nil){
             result = [[UITableViewCell alloc]
-                      initWithStyle:UITableViewCellStyleDefault reuseIdentifier:TableViewCellIdentifier];
+                      initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:TableViewCellIdentifier];
         }
         
         //result.textLabel.text = [NSString stringWithFormat:@"Section %ld, Cell %ld",
         //                         (long)indexPath.section,(long)indexPath.row];
         if ([appDelegate.places count] > 0) {
-            result.textLabel.text = [appDelegate.places objectAtIndex:(long)indexPath.row];
+            AmbiPlace *place = [appDelegate.places objectAtIndex:(long)indexPath.row];
+            NSString *row_text = @"";
+            NSString *row_text_details = @"";
+            NSString *price_level = @"";
+            NSString *rating = @"";
+            NSString *currency = appDelegate.current_location.currency;
+            row_text = place.name;
+            price_level = [AmbiLocation mapPriceToString:[place.price_level integerValue] UsingCurrency:currency];
+            rating = [AmbiLocation mapRatingToString:[place.rating doubleValue]];
+            row_text_details = [row_text_details stringByAppendingString:price_level];
+            row_text_details = [row_text_details stringByAppendingString:@"  "];
+            row_text_details = [row_text_details stringByAppendingString:rating];
+            result.textLabel.text = row_text;
+            result.detailTextLabel.text = row_text_details;
         }
     }
     return result;
 }
 
-- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath  {
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath  {
     
     if ([tableView isEqual:self.myTableView]) {
-        NSLog(@"%@", [NSString stringWithFormat:@"Cell %ld in Section %ld is selected", (long)indexPath.row, (long)indexPath.section]);
+        //NSLog(@"%@", [NSString stringWithFormat:@"Cell %ld in Section %ld is selected", (long)indexPath.row, (long)indexPath.section]);
+      
+        AmbiAppDelegate *appDelegate=(AmbiAppDelegate *)[UIApplication sharedApplication].delegate;
+        NSString *gKey = @"AIzaSyC3G9bERz7ktJkqxvnnRx_Sb9ld8jKQErk";
+        AmbiPlace *place = [appDelegate.places objectAtIndex:indexPath.row];
+        NSString *reference = place.reference;
+
+        NSString *placeString  = [NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/details/json?reference=%@&sensor=false&key=%@",reference,gKey];
+        NSLog(@"request string: %@",placeString);
+        
+        NSURL *placeURL = [NSURL URLWithString:placeString];
+        NSMutableURLRequest *request=[NSMutableURLRequest requestWithURL:placeURL cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:5.0];
+        [request setHTTPMethod:@"GET"];
+        NSURLResponse* response;
+        NSError* error = nil;
+        
+        //Capturing server response
+        NSData* result = [NSURLConnection sendSynchronousRequest:request  returningResponse:&response       error:&error];
+        
+        //if (error != nil) {
+        //NSLog(@"connectionDidFinishLoading");
+        
+        // convert to JSON
+        NSError *myError = nil;
+        NSDictionary *res = [NSJSONSerialization JSONObjectWithData:result options:NSJSONReadingMutableLeaves error:&myError];
+        
+        NSString *place_address = @"";
+        NSString *place_phone = @"";
+        NSMutableArray *place_reviews = [[NSMutableArray alloc] init];
+        NSString *place_rating = @"";
+        NSString *place_iconURL = @"";
+        NSString *place_URL =@"";
+        NSString *place_website = @"";
+        NSString *place_pricelevel = @"";
+        
+        
+        for(NSDictionary *result in [res objectForKey:@"results"])
+        {
+            //NSDictionary *location = [[result objectForKey:@"geometry"] objectForKey:@"location"];
+            place_address = [result objectForKey:@"formatted_address"];
+            place_phone = [result objectForKey:@"international_phone_number"];
+            place_rating = [result objectForKey:@"rating"];
+            place_pricelevel = [result objectForKey:@"price_level"];
+            place_iconURL = [result objectForKey:@"icon"];
+            place_URL = [result objectForKey:@"url"];
+            place_website = [result objectForKey:@"website"];
+            
+            for (NSDictionary *reviews in [result objectForKey:@"reviews"]) {
+                NSString *review_text = [reviews objectForKey:@"text"];
+                [place_reviews addObject:review_text];
+            }
+
+        }
+
+
+        
     }
     
 }
@@ -100,6 +169,7 @@
     
     AmbiAppDelegate *appDelegate=(AmbiAppDelegate *)[UIApplication sharedApplication].delegate;
     CLLocation *currentLocation=appDelegate.locationManager.location;
+    
     NSLog([NSString stringWithFormat:@"\nlatitude: %+.6f\nlongitude: %+.6f\naccuracy: %f",
                                         currentLocation.coordinate.latitude,
                                         currentLocation.coordinate.longitude,
@@ -108,16 +178,17 @@
     NSString *lat = [NSString stringWithFormat:@"%f", currentLocation.coordinate.latitude];
     NSString *longt = [NSString stringWithFormat:@"%f", currentLocation.coordinate.longitude];
     NSString *gKey = @"AIzaSyC3G9bERz7ktJkqxvnnRx_Sb9ld8jKQErk";
+    NSString *radius = @"100";
     NSString *pipe = @"|";
     NSString *e_pipe = [pipe stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSString *type =@"restaurant";
-    type = [type stringByAppendingString:e_pipe];
-    type = [type stringByAppendingString:@"bar"];
-    NSString *placeString  = [NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/search/json?types=%@&name=&location=%@,%@&radius=100&sensor=false&key=%@",type,lat,longt,gKey];
+    //type = [type stringByAppendingString:e_pipe];
+    //type = [type stringByAppendingString:@"bar"];
+    NSString *placeString  = [NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/search/json?types=%@&name=&location=%@,%@&radius=%@&sensor=false&key=%@",type,lat,longt,radius,gKey];
     NSLog(@"request string: %@",placeString);
     
     NSURL *placeURL = [NSURL URLWithString:placeString];
-    NSMutableURLRequest *request=[NSMutableURLRequest requestWithURL:placeURL];
+    NSMutableURLRequest *request=[NSMutableURLRequest requestWithURL:placeURL cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:5.0];
     [request setHTTPMethod:@"GET"];
     NSURLResponse* response;
     NSError* error = nil;
@@ -148,7 +219,6 @@
     
         if (appDelegate.places == nil) {
             appDelegate.places = [[NSMutableArray alloc] init];
-        
         }
     
         [appDelegate.places removeAllObjects];
@@ -156,9 +226,32 @@
         for(NSDictionary *result in [res objectForKey:@"results"])
         {
             //NSDictionary *location = [[result objectForKey:@"geometry"] objectForKey:@"location"];
+            AmbiPlace *place = [[AmbiPlace alloc] init];
             NSString *name = [result objectForKey:@"name"];
-            NSLog(@"name: %@", name);
-            [appDelegate.places addObject:name];
+            NSString *reference = [result objectForKey:@"reference"];
+            NSString *rating = [result objectForKey:@"rating"];
+            NSString *price_level = [result objectForKey:@"price_level"];
+            NSString *icon = [result objectForKey:@"icon"];
+            NSString *place_id = [result objectForKey:@"id"];
+            place.name = name;
+            place.reference = reference;
+            place.rating = rating;
+            place.price_level = price_level;
+            place.icon = icon;
+            place.place_id = place_id;
+            
+            NSDictionary *geo = [result objectForKey:@"geometry"];
+            NSDictionary *locs = [geo objectForKey:@"location"];
+            
+            NSString *lat = [locs objectForKey:@"lat"];
+            NSString *lng = [locs objectForKey:@"lng"];
+            place.lattitude = lat;
+            place.longitude = lng;
+
+
+            //NSLog(@"name: %@", name);
+            [appDelegate.places addObject:place];
+            
         }
     [self.myTableView reloadData];
     //}
