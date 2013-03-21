@@ -67,7 +67,45 @@
     if (rating <= 4. && rating > 3.) {
         result = [result stringByAppendingString:@"****"];
     }
+    if (rating <= 5. && rating > 4.) {
+        result = [result stringByAppendingString:@"*****"];
+    }
+
     return result;
+}
+
++ (UIImage *) mapRatingToImage:(double) rating {
+ 
+    UIImage *img = [[UIImage alloc] init];
+
+    if (rating <= 1. && rating > 0.) {
+        img = [UIImage imageNamed:@"star_1.png"];
+    }
+    if (rating <= 1.5 && rating > 1.) {
+        img = [UIImage imageNamed:@"star_1_5.png"];
+    }
+    if (rating <= 2. && rating > 1.5) {
+        img = [UIImage imageNamed:@"star_2.png"];
+    }
+    if (rating <= 2.5 && rating > 1.5) {
+        img = [UIImage imageNamed:@"star_2_5.png"];
+    }
+    if (rating <= 3. && rating > 2.5) {
+        img = [UIImage imageNamed:@"star_3.png"];
+    }
+    if (rating <= 3.5 && rating > 3.) {
+        img = [UIImage imageNamed:@"star_3_5.png"];
+    }
+    if (rating <= 4. && rating > 3.5) {
+        img = [UIImage imageNamed:@"star_4.png"];
+    }
+    if (rating <= 4.5 && rating > 4.) {
+        img = [UIImage imageNamed:@"star_4_5.png"];
+    }
+    if (rating <= 5. && rating > 4.5) {
+        img = [UIImage imageNamed:@"star_5.png"];
+    }
+    return img;
 }
 
 -(void) set:(CLLocation *) location {

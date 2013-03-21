@@ -9,6 +9,7 @@
 #import "AmbiViewController.h"
 #import "AmbiAppDelegate.h"
 #import "AmbiPlace.h"
+#import "AmbiTableViewCell.h"
 
 @interface AmbiViewController ()
 
@@ -58,17 +59,18 @@
     return result;
 }
 
-- (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *result = nil;
+- (AmbiTableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    AmbiTableViewCell *result = nil;
     
     AmbiAppDelegate *appDelegate=(AmbiAppDelegate *)[UIApplication sharedApplication].delegate;
     
     if ([tableView isEqual:self.myTableView]) {
         static NSString *TableViewCellIdentifier = @"MyCells";
         result = [tableView dequeueReusableCellWithIdentifier:TableViewCellIdentifier];
+        
         if (result == nil){
-            result = [[UITableViewCell alloc]
-                      initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:TableViewCellIdentifier];
+            result = [[AmbiTableViewCell alloc] initWithFrame:CGRectMake(0,0,0,0) reuseIdentifier:TableViewCellIdentifier];
+            result.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         }
         
         //result.textLabel.text = [NSString stringWithFormat:@"Section %ld, Cell %ld",
@@ -79,15 +81,35 @@
             NSString *row_text_details = @"";
             NSString *price_level = @"";
             NSString *rating = @"";
+            NSString *icon = @"";
             NSString *currency = appDelegate.current_location.currency;
             row_text = place.name;
             price_level = [AmbiLocation mapPriceToString:[place.price_level integerValue] UsingCurrency:currency];
             rating = [AmbiLocation mapRatingToString:[place.rating doubleValue]];
-            row_text_details = [row_text_details stringByAppendingString:price_level];
-            row_text_details = [row_text_details stringByAppendingString:@"  "];
-            row_text_details = [row_text_details stringByAppendingString:rating];
-            result.textLabel.text = row_text;
-            result.detailTextLabel.text = row_text_details;
+            UIImage *rating_img = [AmbiLocation mapRatingToImage:[place.rating doubleValue]];
+            icon = place.icon;
+            if ([icon rangeOfString:@"bar"].location != NSNotFound) {
+                icon = @"bar.png";
+            } else if ([icon rangeOfString:@"cafe"].location != NSNotFound) {
+                icon = @"cafe.png";
+            } else if ([icon rangeOfString:@"restaurant"].location != NSNotFound) {
+                icon = @"restaurant.png";
+            }
+            else {
+                icon = @"establishment.png";
+            }
+            UIImage *icon_img = [[UIImage alloc] init];
+            icon_img = [UIImage imageNamed:icon];
+            //row_text_details = [row_text_details stringByAppendingString:price_level];
+            //row_text_details = [row_text_details stringByAppendingString:@"  "];
+            //row_text_details = [row_text_details stringByAppendingString:rating];
+            result.ratingView.image = rating_img;
+            result.priceLabel.text = price_level;
+            result.iconView.image = icon_img;
+            result.nameLabel.text = row_text;
+            //result.detailTextLabel.text = row_text_details;
+            //[result.imageView setImage:imgView.image];
+            //[result addSubview:imgView];
         }
     }
     return result;
@@ -162,6 +184,11 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+   return 45;
+}
+
 
 //- (IBAction)Locate:(UIButton*)sender {
 - (void) buttonIspressed:(UIButton*)paramSender{
@@ -182,8 +209,11 @@
     NSString *pipe = @"|";
     NSString *e_pipe = [pipe stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSString *type =@"restaurant";
-    //type = [type stringByAppendingString:e_pipe];
-    //type = [type stringByAppendingString:@"bar"];
+    type = [type stringByAppendingString:e_pipe];
+    type = [type stringByAppendingString:@"bar"];
+    type = [type stringByAppendingString:e_pipe];
+    type = [type stringByAppendingString:@"cafe"];
+
     NSString *placeString  = [NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/search/json?types=%@&name=&location=%@,%@&radius=%@&sensor=false&key=%@",type,lat,longt,radius,gKey];
     NSLog(@"request string: %@",placeString);
     
