@@ -13,6 +13,11 @@
 
 @property (nonatomic, strong) UITableView *myTableView;
 @property (nonatomic, strong) UIButton  *myButton;
+@property (nonatomic, strong) NSString  *key;
+
+@property (nonatomic, strong) NSString  *row_height;
+@property (nonatomic, strong) NSString  *search_entity;
+@property (nonatomic, strong) NSString  *search_radius;
 
 - (IBAction)Locate:(UIButton*)sender;
     

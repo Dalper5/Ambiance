@@ -10,7 +10,7 @@
 
 @implementation AmbiTableViewCell
 
-@synthesize priceLabel,nameLabel,ratingView, iconView;
+@synthesize priceLabel,nameLabel,ratingView, photoView, iconView, row_height;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
@@ -21,21 +21,24 @@
     return self;
 }
 
-- (id)initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
+- (id)initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier rowHeight:(NSString*)height {
     if (self = [super initWithFrame:frame reuseIdentifier:reuseIdentifier]) {
         // Initialization code
+        row_height = height;
         nameLabel = [[UILabel alloc]init];
         nameLabel.textAlignment = UITextAlignmentLeft;
-        nameLabel.font = [UIFont systemFontOfSize:14];
+        nameLabel.font = [UIFont boldSystemFontOfSize:14];
         priceLabel = [[UILabel alloc]init];
         priceLabel.textAlignment = UITextAlignmentLeft;
-        priceLabel.font = [UIFont systemFontOfSize:8];
+        priceLabel.font = [UIFont boldSystemFontOfSize:14];
         iconView = [[UIImageView alloc]init];
         ratingView = [[UIImageView alloc] init];
+        photoView = [[UIImageView alloc] init];
         [self.contentView addSubview:nameLabel];
         [self.contentView addSubview:priceLabel];
         [self.contentView addSubview:iconView];
         [self.contentView addSubview:ratingView];
+        [self.contentView addSubview:photoView];
     }
     return self;
 }
@@ -52,18 +55,24 @@
     CGRect contentRect = self.contentView.bounds;
     CGFloat boundsX = contentRect.origin.x;
     CGRect frame;
-    frame= CGRectMake(boundsX+5 ,10, 25, 25);
-    iconView.frame = frame;
+    NSInteger height = [self.row_height integerValue];
     
-    frame= CGRectMake(boundsX+40 ,2, 200, 25);
+    frame= CGRectMake(boundsX+0 ,1, height-4, height-3);
+    photoView.frame = frame;
+
+    frame= CGRectMake(boundsX+height+4 ,2, 200, 25);
     nameLabel.frame = frame;
-    
-    frame= CGRectMake(boundsX+40 ,25, 80, 15);
+
+    frame= CGRectMake(boundsX+height+6 ,30, 15, 15);
+    iconView.frame = frame;
+     
+    frame= CGRectMake(boundsX+height+28 ,26, 100, 20);
     ratingView.frame = frame;
     
-    frame= CGRectMake(boundsX+125 ,25, 85, 15);
+    frame= CGRectMake(boundsX+height +135 ,30, 40, 15);
     priceLabel.frame = frame;
-    UIFont* font = [UIFont fontWithName:@"Verdana" size:14.0];
+    
+    UIFont* font = [UIFont fontWithName:@"Verdana" size:16.0];
     priceLabel.font = font;
 
 }

@@ -8,7 +8,6 @@
 
 #import "AmbiAppDelegate.h"
 #import "AmbiPlace.h"
-#import "AmbiPlaceDetails.h"
 
 @implementation AmbiAppDelegate
 

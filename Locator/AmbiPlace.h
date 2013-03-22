@@ -13,18 +13,21 @@
 
     NSString *name;
     NSString *reference;
+    NSString *reference_photo;
     NSString *rating;
     NSString *price_level;
     NSString *icon;
     NSString *place_id;
     NSString *longitude;
     NSString *lattitude;
+    
 }
 
 + (NSString *)addressComponent:(NSString *)component inAddressArray:(NSArray *)array ofType:(NSString *)type;
 
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) NSString *reference;
+@property (nonatomic, strong) NSString *reference_photo;
 @property (nonatomic, strong) NSString *icon;
 @property (nonatomic, strong) NSString *place_id;
 @property (nonatomic, strong) NSString *rating;

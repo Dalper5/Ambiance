@@ -27,6 +27,8 @@ CLLocationCoordinate2D coordinate;
 + (NSString *) mapPriceToString:(NSInteger) price UsingCurrency:(NSString*) currency;
 + (NSString *) mapRatingToString:(double) rating;
 + (UIImage *) mapRatingToImage:(double) rating;
++ (UIImage*)mergeImage:(UIImage*)first withImage:(UIImage*)second;
+
 - (void) set:(CLLocation *)location;
 
 @end
