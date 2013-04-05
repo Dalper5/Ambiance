@@ -10,7 +10,7 @@
 
 @implementation AmbiTableViewCell
 
-@synthesize priceLabel,nameLabel,ratingView, photoView, iconView, row_height;
+@synthesize priceLabel,soundLabel,nameLabel,ratingView, photoView, iconView, row_height;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
@@ -31,11 +31,15 @@
         priceLabel = [[UILabel alloc]init];
         priceLabel.textAlignment = UITextAlignmentLeft;
         priceLabel.font = [UIFont boldSystemFontOfSize:14];
+        soundLabel = [[UILabel alloc]init];
+        soundLabel.textAlignment = UITextAlignmentLeft;
+        soundLabel.font = [UIFont boldSystemFontOfSize:14];
         iconView = [[UIImageView alloc]init];
         ratingView = [[UIImageView alloc] init];
         photoView = [[UIImageView alloc] init];
         [self.contentView addSubview:nameLabel];
         [self.contentView addSubview:priceLabel];
+        [self.contentView addSubview:soundLabel];
         [self.contentView addSubview:iconView];
         [self.contentView addSubview:ratingView];
         [self.contentView addSubview:photoView];
@@ -74,6 +78,10 @@
     
     UIFont* font = [UIFont fontWithName:@"Verdana" size:16.0];
     priceLabel.font = font;
+    
+    frame= CGRectMake(boundsX+height +55 ,50, 140, 15);
+    soundLabel.frame = frame;
+    soundLabel.font = font;
 
 }
 

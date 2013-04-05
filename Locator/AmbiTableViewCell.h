@@ -12,6 +12,7 @@
     
     UILabel *nameLabel;
     UILabel *priceLabel;
+    UILabel *soundLabel;
     UIImageView *iconView;
     UIImageView *ratingView;
     UIImageView *photoView;
@@ -24,6 +25,7 @@
 @property (nonatomic, strong) NSString *row_height;
 @property(nonatomic,strong)UILabel *nameLabel;
 @property(nonatomic,strong)UILabel *priceLabel;
+@property(nonatomic,strong)UILabel *soundLabel;
 @property(nonatomic,strong)UIImageView *iconView;
 @property(nonatomic,strong)UIImageView *ratingView;
 @property(nonatomic,strong)UIImageView *photoView;

@@ -13,6 +13,7 @@
 
 #import "AFHTTPRequestOperation.h"
 #import "AFJSONRequestOperation.h"
+#import "AFHTTPClient.h"
 #include "AFImageRequestOperation.h"
 
 @interface AmbiViewController ()
@@ -55,6 +56,56 @@
     [self.view addSubview:self.myTableView];
     [self.view addSubview:self.myButton];
     
+}
+
+-(void)stopSampling{
+    [levelTimer invalidate];
+    
+    NSLog(@"title =%@", btnPressed);
+    
+    NSURL *baseURL = [NSURL URLWithString:@"http://upbeat.azurewebsites.net/api/soundsamples"];
+    
+    AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:baseURL];
+    [httpClient defaultValueForHeader:@"Accept"];
+    
+    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+                            btnPressed, @"googleid", [NSString stringWithFormat:@"%f", avgSound], @"soundsample", nil];
+    
+    NSMutableURLRequest *request = [httpClient requestWithMethod:@"POST"
+                                                            path:@"http://upbeat.azurewebsites.net/api/soundsamples/postsoundsamplewithgoogleid" parameters:params];
+    
+    //Add your request object to an AFHTTPRequestOperation
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc]
+                                          initWithRequest:request];
+    
+    [httpClient registerHTTPOperationClass:[AFHTTPRequestOperation class]];
+    
+    [operation setCompletionBlockWithSuccess:
+     ^(AFHTTPRequestOperation *operation,
+       id responseObject) {
+         NSString *response = [operation responseString];
+         NSLog(@"response: [%@]",response);
+     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+         NSLog(@"error: %@", [operation error]);
+     }];
+    
+    //call start on your request operation
+    [operation start];
+    
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Average Volume"
+														message:[NSString stringWithFormat: @"Average: %f", avgSound]
+													   delegate:self cancelButtonTitle:@"Great"
+											  otherButtonTitles:nil];
+    
+    [alertView show];
+    
+    
+}
+
+- (void)levelTimerCallback:(NSTimer *)timer {
+	[recorder updateMeters];
+	avgSound = [recorder averagePowerForChannel:0];
+    NSLog(@"Average input: %f Peak input: %f", [recorder averagePowerForChannel:0], [recorder peakPowerForChannel:0]);
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
@@ -129,7 +180,7 @@
                 NSString *gKey = self.key;
                 NSString *height = self.row_height;
                 NSString *placeString  = [NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/photo?maxwidth=%@&photoreference=%@&sensor=false&key=%@",height,place.reference_photo,gKey];
-                NSLog(@"request string: %@",placeString);
+                //NSLog(@"request string: %@",placeString);
                 NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:placeString]];
                 AFImageRequestOperation *operation = [AFImageRequestOperation imageRequestOperationWithRequest:request success:^(UIImage *image) {
                 
@@ -148,10 +199,121 @@
             //result.detailTextLabel.text = row_text_details;
             //[result.imageView setImage:imgView.image];
             //[result addSubview:imgView];
+            
+            UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+            [button addTarget:self action:@selector(recordActionPressed:) forControlEvents:UIControlEventTouchDown];
+            [button setImage:[UIImage imageNamed:@"record.png"] forState:UIControlStateNormal];
+            button.frame = CGRectMake(250.0f, 25.0f, 32.0f, 32.0f);
+            
+            //need a much better way to pass this - dave
+            [button setTitle:[NSString stringWithFormat:@"%@",place.place_id] forState:UIControlStateDisabled];
+            
+            [result addSubview:button];
+            
+            
+            NSString *placeString  = [NSString stringWithFormat:@"http://upbeat.azurewebsites.net/api/beats/getbeatbygoogleid/%@",place.place_id];
+            //NSLog(@"request string: %@",placeString);
+            
+            NSURL *placeURL = [NSURL URLWithString:placeString];
+            NSMutableURLRequest *request=[NSMutableURLRequest requestWithURL:placeURL cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:5.0];
+            [request setHTTPMethod:@"GET"];
+            
+            AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+                //NSLog(@"IP Address: %@", [JSON valueForKeyPath:@"origin"]);
+                NSLog(@"connectionDidFinishLoading");
+                
+                NSLog(@"%@", JSON);
+                
+                // convert to JSON
+                NSError *myError = nil;
+                NSString *sound_level = @"";
+                
+                //NSDictionary *res = [NSJSONSerialization JSONObjectWithData:result options:NSJSONReadingMutableLeaves error:&myError];
+                NSDictionary *res = (NSDictionary *) JSON;
+                NSLog(@"error : %@", myError);
+                
+                NSString *sampleavg = [res objectForKey:@"SampleAvg"];
+                
+                NSLog(@"sampleavg: %@", sampleavg);
+                
+                //NSString *beatid = [res valueForKeyPath:@"Beat.BeatId"];
+                
+                //NSLog(@"beatid: %@", beatid);
+                
+                for(NSDictionary *sndresult in [res valueForKeyPath:@"Beat.SoundSamples"])
+                {
+                    sound_level = [sndresult objectForKey:@"SoundLevel"];
+                    
+                    NSLog(@"soundlevel: %@", sound_level);
+                    
+                    //NSLog(@"BeatId: %@", [result objectForKey:@"BeatId"]);
+                }
+                
+                
+                result.soundLabel.text = [NSString stringWithFormat: @"%@", sampleavg];
+                
+                //[self.myTableView reloadData];
+                
+            } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+                NSLog(@"Request Failed with Error: %@, %@", error, error.userInfo);
+            }];
+        
+            [operation start];
+
         }
     }
     return result;
 }
+
+
+-(void)recordActionPressed :(id)sender
+{
+    UIButton* b = (UIButton*) sender;
+    
+	//Get the superview from this button which will be our cell
+	UITableViewCell *owningCell = (UITableViewCell*)[sender superview];
+	
+	NSIndexPath *pathToCell = [self.myTableView indexPathForCell:owningCell];
+    
+    
+    //really ugly, need a better way to maintain googleid of button pressed
+    btnPressed = [b titleForState:UIControlStateDisabled];
+    
+    //Constants for AVAudioRecorder
+    NSURL *url = [NSURL fileURLWithPath:@"/dev/null"];
+    
+  	NSDictionary *settings = [NSDictionary dictionaryWithObjectsAndKeys:
+                              [NSNumber numberWithFloat: 44100.0],                 AVSampleRateKey,
+                              [NSNumber numberWithInt: kAudioFormatAppleLossless], AVFormatIDKey,
+                              [NSNumber numberWithInt: 1],                         AVNumberOfChannelsKey,
+                              [NSNumber numberWithInt: AVAudioQualityMax],         AVEncoderAudioQualityKey,
+                              nil];
+    
+  	NSError *error;
+    
+  	recorder = [[AVAudioRecorder alloc] initWithURL:url settings:settings error:&error];
+    
+  	if (recorder) {
+  		[recorder prepareToRecord];
+  		recorder.meteringEnabled = YES;
+  		[recorder record];
+        levelTimer = [NSTimer scheduledTimerWithTimeInterval: 0.03 target: self selector: @selector(levelTimerCallback:) userInfo: nil repeats: YES];
+        
+        [NSTimer scheduledTimerWithTimeInterval:3 target: self selector: @selector(stopSampling) userInfo:nil repeats: NO];
+        
+  	} else
+  		NSLog([error description]);
+	
+	/*
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Custom Button Pressed"
+														message:[NSString stringWithFormat: @"You pressed the custom button on cell #%i", pathToCell.row + 1]
+													   delegate:self cancelButtonTitle:@"Great"
+											  otherButtonTitles:nil];
+	*/
+    
+
+}
+
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath  {
     
@@ -165,7 +327,7 @@
         NSString *reference = place.reference;
 
         NSString *placeString  = [NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/details/json?reference=%@&sensor=false&key=%@",reference,gKey];
-        NSLog(@"request string: %@",placeString);
+        //NSLog(@"request string: %@",placeString);
         
         NSURL *placeURL = [NSURL URLWithString:placeString];
         NSMutableURLRequest *request=[NSMutableURLRequest requestWithURL:placeURL cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:5.0];
