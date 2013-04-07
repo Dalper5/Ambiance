@@ -42,9 +42,13 @@
 		1FD8B8EE16F6CD200008EBE1 /* star_4_5.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FD8B8E516F6CD200008EBE1 /* star_4_5.png */; };
 		1FD8B8EF16F6CD200008EBE1 /* star_5.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FD8B8E616F6CD200008EBE1 /* star_5.png */; };
 		1FD8B8F216F81A060008EBE1 /* AmbiTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1FD8B8F116F81A060008EBE1 /* AmbiTableViewCell.m */; };
+		1FEDAB801711B5A500FAAEDD /* LocationImage.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FEDAB7F1711B5A500FAAEDD /* LocationImage.png */; };
+		1FEDAB821711D82F00FAAEDD /* zoom_lens.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FEDAB811711D82F00FAAEDD /* zoom_lens.png */; };
+		1FEDAB841711E31700FAAEDD /* Ambiance_Logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FEDAB831711E31700FAAEDD /* Ambiance_Logo.png */; };
+		1FEDAB861711E41F00FAAEDD /* Ambiance_Logo_V1.png in Resources */ = {isa = PBXBuildFile; fileRef = 1FEDAB851711E41F00FAAEDD /* Ambiance_Logo_V1.png */; };
+		1FEDAB881712258D00FAAEDD /* TestStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1FEDAB871712258D00FAAEDD /* TestStoryboard.storyboard */; };
 		B5203A621708CE2E0086706C /* record.png in Resources */ = {isa = PBXBuildFile; fileRef = B5203A611708CE2E0086706C /* record.png */; };
 		B5203A651708D2CE0086706C /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5203A641708D2CE0086706C /* AVFoundation.framework */; };
-		B5203AC0170E60890086706C /* AmbiTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5203ABF170E60890086706C /* AmbiTableViewController.m */; };
 		B545B2FE1702263800C6A112 /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = B545B2EC1702263800C6A112 /* AFHTTPClient.m */; };
 		B545B2FF1702263800C6A112 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = B545B2EE1702263800C6A112 /* AFHTTPRequestOperation.m */; };
 		B545B3001702263800C6A112 /* AFImageRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = B545B2F01702263800C6A112 /* AFImageRequestOperation.m */; };
@@ -112,10 +116,13 @@
 		1FD8B8E616F6CD200008EBE1 /* star_5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = star_5.png; sourceTree = "<group>"; };
 		1FD8B8F016F81A060008EBE1 /* AmbiTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmbiTableViewCell.h; sourceTree = "<group>"; };
 		1FD8B8F116F81A060008EBE1 /* AmbiTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AmbiTableViewCell.m; sourceTree = "<group>"; };
+		1FEDAB7F1711B5A500FAAEDD /* LocationImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LocationImage.png; sourceTree = "<group>"; };
+		1FEDAB811711D82F00FAAEDD /* zoom_lens.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = zoom_lens.png; sourceTree = "<group>"; };
+		1FEDAB831711E31700FAAEDD /* Ambiance_Logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Ambiance_Logo.png; sourceTree = "<group>"; };
+		1FEDAB851711E41F00FAAEDD /* Ambiance_Logo_V1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Ambiance_Logo_V1.png; sourceTree = "<group>"; };
+		1FEDAB871712258D00FAAEDD /* TestStoryboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = TestStoryboard.storyboard; sourceTree = "<group>"; };
 		B5203A611708CE2E0086706C /* record.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = record.png; sourceTree = "<group>"; };
 		B5203A641708D2CE0086706C /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
-		B5203ABE170E60890086706C /* AmbiTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmbiTableViewController.h; sourceTree = "<group>"; };
-		B5203ABF170E60890086706C /* AmbiTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AmbiTableViewController.m; sourceTree = "<group>"; };
 		B545B2EB1702263800C6A112 /* AFHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPClient.h; sourceTree = "<group>"; };
 		B545B2EC1702263800C6A112 /* AFHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPClient.m; sourceTree = "<group>"; };
 		B545B2ED1702263800C6A112 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
@@ -199,8 +206,6 @@
 		1F9CD26816ED5BA00058CEE2 /* Ambiance */ = {
 			isa = PBXGroup;
 			children = (
-				B5203ABE170E60890086706C /* AmbiTableViewController.h */,
-				B5203ABF170E60890086706C /* AmbiTableViewController.m */,
 				1F9CD27116ED5BA00058CEE2 /* AmbiAppDelegate.h */,
 				1F9CD27216ED5BA00058CEE2 /* AmbiAppDelegate.m */,
 				1F7EBFF516F52E6000BB26E5 /* AmbiPlace.h */,
@@ -213,6 +218,7 @@
 				1F9CD27D16ED5BA00058CEE2 /* MainStoryboard_iPad.storyboard */,
 				1F9CD28016ED5BA00058CEE2 /* AmbiViewController.h */,
 				1F9CD28116ED5BA00058CEE2 /* AmbiViewController.m */,
+				1FEDAB871712258D00FAAEDD /* TestStoryboard.storyboard */,
 				1FD8B8F016F81A060008EBE1 /* AmbiTableViewCell.h */,
 				1FD8B8F116F81A060008EBE1 /* AmbiTableViewCell.m */,
 				1F9CD26916ED5BA00058CEE2 /* Supporting Files */,
@@ -226,6 +232,10 @@
 			children = (
 				B5203A611708CE2E0086706C /* record.png */,
 				1FD8B8DE16F6CD200008EBE1 /* star_1.png */,
+				1FEDAB811711D82F00FAAEDD /* zoom_lens.png */,
+				1FEDAB851711E41F00FAAEDD /* Ambiance_Logo_V1.png */,
+				1FEDAB7F1711B5A500FAAEDD /* LocationImage.png */,
+				1FEDAB831711E31700FAAEDD /* Ambiance_Logo.png */,
 				1FD8B8DF16F6CD200008EBE1 /* star_1_5.png */,
 				1FD8B8E016F6CD200008EBE1 /* star_2.png */,
 				1FD8B8E116F6CD200008EBE1 /* star_2_5.png */,
@@ -387,6 +397,11 @@
 				1FD8B8EE16F6CD200008EBE1 /* star_4_5.png in Resources */,
 				1FD8B8EF16F6CD200008EBE1 /* star_5.png in Resources */,
 				B5203A621708CE2E0086706C /* record.png in Resources */,
+				1FEDAB801711B5A500FAAEDD /* LocationImage.png in Resources */,
+				1FEDAB821711D82F00FAAEDD /* zoom_lens.png in Resources */,
+				1FEDAB841711E31700FAAEDD /* Ambiance_Logo.png in Resources */,
+				1FEDAB861711E41F00FAAEDD /* Ambiance_Logo_V1.png in Resources */,
+				1FEDAB881712258D00FAAEDD /* TestStoryboard.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -437,7 +452,6 @@
 				B545B3041702263800C6A112 /* AFURLConnectionOperation.m in Sources */,
 				B545B3051702263800C6A112 /* AFXMLRequestOperation.m in Sources */,
 				B545B3061702263800C6A112 /* UIImageView+AFNetworking.m in Sources */,
-				B5203AC0170E60890086706C /* AmbiTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

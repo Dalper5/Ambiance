@@ -29,21 +29,156 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     
-    self.myButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    self.myButton.frame = CGRectMake(110.0f,429.0f,80.0f,27.0f);
-    [self.myButton setTitle:@"Find" forState:UIControlStateNormal];
-    [self.myButton addTarget:self action:@selector(buttonIspressed:) forControlEvents:UIControlEventTouchUpInside];
+    CGRect screenRect = [[UIScreen mainScreen] bounds];
+    CGFloat screenWidth = screenRect.size.width;
+    CGFloat screenHeight = screenRect.size.height;
+
+    CGRect sizeLogoBar =  CGRectMake(0.0f, 0.0f, screenWidth, screenHeight/10.0f);
+    CGRect sizeSearchBar =  CGRectMake(5.0f, 0.0f + screenHeight/10.0f + 1.0f, screenWidth-10.0f, screenHeight/10.0f);
+    self.sizeSearchBar = sizeSearchBar;
+    self.sizeLogoBar = sizeLogoBar;
     
-    CGRect size =  CGRectMake(1.0f, 33.0f, 318.0f, 387.0f);
-    self.myTableView = [[UITableView alloc] initWithFrame:size style:UITableViewStylePlain];
-    //self.myTableView.frame = CGRectMake(10.0, 32.0, 298.0, 445.0);
-    self.myTableView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    self.myTableView.delegate = self;
-    self.myTableView.dataSource = self;
+    // Setup top view
+    // Setup Location Button
+    UIImage *locationButtonImage = [UIImage imageNamed:@"LocationImage.png"];
+    self.myLocationButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.myLocationButton.frame = CGRectMake(0.0f,0.0f + screenHeight/10.0f + screenHeight/10.0f + 1.0f,screenWidth/2.0f,screenWidth/2.0f);
+    //[[self.myLocationButton layer] setBorderWidth:2.0f];
+    //[[self.myLocationButton layer] setBorderColor:[UIColor blackColor].CGColor];
+    //[self.myLocationButton setTitle:@"Location" forState:UIControlStateNormal];
+    [self.myLocationButton setBackgroundImage:locationButtonImage forState:UIControlStateNormal];
+    
+    [self.myLocationButton addTarget:self action:@selector(LocationButtonIspressed:) forControlEvents:UIControlEventTouchUpInside];
+    
+
+
+    // Setup main top view
+    self.myTopView = [[UIView alloc] initWithFrame:screenRect];
+    self.myTopView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    //self.myTopView.backgroundColor = [[UIColor alloc] initWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:1];
+    self.myTopView.backgroundColor = [UIColor colorWithWhite: 0.95 alpha:1];
+    
+    // Setup logo view
+    self.myTopViewLabelTop = [[UILabel alloc] initWithFrame:sizeLogoBar];
+    self.myTopViewLabelTop.layer.borderColor = [UIColor colorWithWhite: 0.95 alpha:1].CGColor;
+    self.myTopViewLabelTop.layer.borderWidth = 2.0;
+    self.myTopViewLabelTop.text = @"Ambiance";
+    self.myTopViewLabelTop.textAlignment = UITextAlignmentCenter;
+    self.myTopViewLabelTop.backgroundColor = [UIColor colorWithWhite: 0.8 alpha:1];
+    self.myTopViewLabelTop.textColor = [UIColor blackColor];
+    UIImage *logoImage = [UIImage imageNamed:@"Ambiance_Logo_V1.png"];
+    UIImageView *logoImageView = [[UIImageView alloc] initWithImage:logoImage];
+    [logoImageView setFrame:CGRectMake(screenWidth/2.0 + 40.0f,9,30,30)];
+    [self.myTopViewLabelTop addSubview:logoImageView];
+
+    // Setup search box
+    self.myTopViewSearchText = [[UITextField alloc] initWithFrame:sizeSearchBar];
+    self.myTopViewSearchText.backgroundColor = [UIColor whiteColor];
+    self.myTopViewSearchText.textColor = [UIColor blackColor];
+    self.myTopViewSearchText.font = [UIFont systemFontOfSize:16.0f];
+    self.myTopViewSearchText.borderStyle = UITextBorderStyleRoundedRect;
+    self.myTopViewSearchText.clearButtonMode = UITextFieldViewModeWhileEditing;
+    self.myTopViewSearchText.returnKeyType = UIReturnKeyDone;
+    self.myTopViewSearchText.keyboardType = UIKeyboardTypeNamePhonePad;
+    //self.myTopViewSearchText.textAlignment = UITextAlignmentLeft;
+    self.myTopViewSearchText.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+    //self.myTopViewSearchText.placeholder = @"Search for (restaurants, bars, etc.)";
+    UIColor *color = [UIColor colorWithWhite: 0.1 alpha:1];
+    self.myTopViewSearchText.attributedPlaceholder =
+    [[NSAttributedString alloc] initWithString:@"        Search for (restaurants, bars, etc.)" attributes:@{NSForegroundColorAttributeName: color}];
+    UIImage *zoomImage = [UIImage imageNamed:@"zoom_lens.png"];
+    UIImageView *zoomImageView = [[UIImageView alloc] initWithImage:zoomImage];
+    [zoomImageView setFrame:CGRectMake(5,8,30,30)];
+    [self.myTopViewSearchText addSubview:zoomImageView];
+    self.myTopViewSearchText.delegate = self;
+    
+    [self.myTopView addSubview:self.myLocationButton];
+    [self.myTopView addSubview:self.myTopViewSearchText];
+    [self.myTopView addSubview:self.myTopViewLabelTop];
+    
+    self.myListView = [[UIView alloc] initWithFrame:screenRect];
+    self.myListView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    //self.myListView.backgroundColor = [[UIColor alloc] initWithRed:226.0/255.0 green:131.0/255.0 blue:238.0/255.0 alpha:1];
+    
+    CGRect sizeListTable =  CGRectMake(1.0f, screenHeight/10.0f, screenWidth - 1.0f, screenHeight - screenHeight/10.0f);
+    self.myTableListView = [[UITableView alloc] initWithFrame:sizeListTable style:UITableViewStylePlain];
+    self.myTableListView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    self.myTableListView.delegate = self;
+    self.myTableListView.dataSource = self;
+    
+    //Setup List View Lable
+    self.myTableListLabelTop = [[UILabel alloc] initWithFrame:sizeLogoBar];
+    self.myTableListLabelTop.layer.borderColor = [UIColor colorWithWhite: 0.95 alpha:1].CGColor;
+    self.myTableListLabelTop.layer.borderWidth = 2.0;
+    self.myTableListLabelTop.text = @"Ambiance";
+    self.myTableListLabelTop.textAlignment = UITextAlignmentCenter;
+    self.myTableListLabelTop.backgroundColor = [UIColor colorWithWhite: 0.8 alpha:1];
+    self.myTableListLabelTop.textColor = [UIColor blackColor];
+    UIImage *logoImage2 = [UIImage imageNamed:@"Ambiance_Logo_V1.png"];
+    UIImageView *logoImageView2 = [[UIImageView alloc] initWithImage:logoImage2];
+    [logoImageView2 setFrame:CGRectMake(screenWidth/2.0 + 40.0f,9,30,30)];
+    [self.myTableListLabelTop addSubview:logoImageView2];
+    //setup back button
+    self.myTableListBackButton = [UIButton buttonWithType:101]; // left-pointing shape!
+    [self.myTableListBackButton setFrame:CGRectMake(3.0f, sizeLogoBar.size.height / 5.0f, 20.0f, 10.0f)];
+    [self.myTableListBackButton addTarget:self action:@selector(BackFromTableList:) forControlEvents:UIControlEventTouchUpInside];
+    [self.myTableListBackButton setTitle:@"Back" forState:UIControlStateNormal];
+    
+    [self.myListView addSubview:self.myTableListView];
+    [self.myListView addSubview:self.myTableListLabelTop];
+    [self.myListView addSubview:self.myTableListBackButton];
+    
+    //setup Search view
+    self.mySearchView = [[UIView alloc] initWithFrame:screenRect];
+    self.mySearchView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    //self.myTopView.backgroundColor = [[UIColor alloc] initWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:1];
+    self.mySearchView.backgroundColor = [UIColor colorWithWhite: 0.95 alpha:1];
+    
+    // Setup logo view
+    self.mySearchViewLabelTop = [[UILabel alloc] initWithFrame:sizeLogoBar];
+    self.mySearchViewLabelTop.layer.borderColor = [UIColor colorWithWhite: 0.95 alpha:1].CGColor;
+    self.mySearchViewLabelTop.layer.borderWidth = 2.0;
+    self.mySearchViewLabelTop.text = @"Ambiance";
+    self.mySearchViewLabelTop.textAlignment = UITextAlignmentCenter;
+    self.mySearchViewLabelTop.backgroundColor = [UIColor colorWithWhite: 0.8 alpha:1];
+    self.mySearchViewLabelTop.textColor = [UIColor blackColor];
+    UIImage *logoImage3 = [UIImage imageNamed:@"Ambiance_Logo_V1.png"];
+    UIImageView *logoImageView3 = [[UIImageView alloc] initWithImage:logoImage3];
+    [logoImageView3 setFrame:CGRectMake(screenWidth/2.0 + 40.0f,9,30,30)];
+    [self.mySearchViewLabelTop addSubview:logoImageView3];
+    
+    // Setup search box
+    self.mySearchViewSearchText = [[UITextField alloc] initWithFrame:sizeSearchBar];
+    self.mySearchViewSearchText.backgroundColor = [UIColor whiteColor];
+    self.mySearchViewSearchText.textColor = [UIColor blackColor];
+    self.mySearchViewSearchText.font = [UIFont systemFontOfSize:16.0f];
+    self.mySearchViewSearchText.borderStyle = UITextBorderStyleRoundedRect;
+    self.mySearchViewSearchText.clearButtonMode = UITextFieldViewModeWhileEditing;
+    self.mySearchViewSearchText.returnKeyType = UIReturnKeyDone;
+    //self.myTopViewSearchText.textAlignment = UITextAlignmentLeft;
+    self.mySearchViewSearchText.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+    //self.mySearchViewSearchText.placeholder = @"Search for (restaurants, bars, etc.)";
+    //UIColor *color3 = [UIColor colorWithWhite: 0.1 alpha:1];
+    //self.mySearchViewSearchText.attributedPlaceholder =
+    //[[NSAttributedString alloc] initWithString:@"        Search for (restaurants, bars, etc.)" attributes:@{NSForegroundColorAttributeName: color3}];
+    //UIImage *zoomImage3 = [UIImage imageNamed:@"zoom_lens.png"];
+    //UIImageView *zoomImageView3 = [[UIImageView alloc] initWithImage:zoomImage3];
+    //[zoomImageView3 setFrame:CGRectMake(5,8,30,30)];
+    //[self.mySearchViewSearchText addSubview:zoomImageView3];
+    self.mySearchViewSearchText.delegate = self;
+    self.mySearchBackButton = [UIButton buttonWithType:101]; // left-pointing shape!
+    [self.mySearchBackButton setFrame:CGRectMake(3.0f, sizeLogoBar.size.height / 5.0f, 20.0f, 10.0f)];
+    [self.mySearchBackButton addTarget:self action:@selector(BackFromSearch:) forControlEvents:UIControlEventTouchUpInside];
+    [self.mySearchBackButton setTitle:@"Back" forState:UIControlStateNormal];
+    
+    [self.mySearchView addSubview:self.mySearchViewSearchText];
+    [self.mySearchView addSubview:self.mySearchViewLabelTop];
+    [self.mySearchView addSubview:self.mySearchBackButton];
     
     self.key = @"AIzaSyC3G9bERz7ktJkqxvnnRx_Sb9ld8jKQErk";
     self.row_height = @"80";
     self.search_radius = @"100";
+    self.selectedColor = [UIColor colorWithRed:226.0/255.0 green:231.0/255.0 blue:238.0/255.0 alpha:1];
     NSString *pipe = @"|";
     NSString *e_pipe = [pipe stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSString *type =@"restaurant";
@@ -53,8 +188,32 @@
     type = [type stringByAppendingString:@"cafe"];
     self.search_entity = type;
     
-    [self.view addSubview:self.myTableView];
-    [self.view addSubview:self.myButton];
+    [self.view addSubview:self.myListView];
+    [self.view addSubview:self.myTopView];
+    [self.view addSubview:self.mySearchView];
+
+    
+    [self.view bringSubviewToFront:self.myTopView];
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    /*--
+     * This method is called when the textField becomes active, or is the First Responder
+     --*/
+    
+    if ([textField isEqual:self.myTopViewSearchText]) {
+        //textField.placeholder = nil;
+        //bring up Search View
+        NSLog(@"textFieldDidBeginEditing : Search Hit on Top View");
+
+        [self.mySearchViewSearchText becomeFirstResponder];
+        [self.view bringSubviewToFront:self.mySearchView];
+        
+    } else  if ([textField isEqual:self.mySearchViewSearchText]) {
+        NSLog(@"textFieldDidBeginEditing : Search Hit on Search View");
+        [self.mySearchViewSearchText becomeFirstResponder];
+
+    }
     
 }
 
@@ -110,7 +269,7 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     NSInteger result = 0;
-    if ([tableView isEqual:self.myTableView]) {
+    if ([tableView isEqual:self.myTableListView]) {
         result = 1;
     }
     return result;
@@ -131,7 +290,7 @@
     
     AmbiAppDelegate *appDelegate=(AmbiAppDelegate *)[UIApplication sharedApplication].delegate;
     
-    if ([tableView isEqual:self.myTableView]) {
+    if ([tableView isEqual:self.myTableListView]) {
         static NSString *TableViewCellIdentifier = @"MyCells";
         result = [tableView dequeueReusableCellWithIdentifier:TableViewCellIdentifier];
         
@@ -146,7 +305,7 @@
         if ([appDelegate.places count] > 0) {
             AmbiPlace *place = [appDelegate.places objectAtIndex:(long)indexPath.row];
             NSString *row_text = @"";
-            NSString *row_text_details = @"";
+            // NSString *row_text_details = @"";
             NSString *price_level = @"";
             NSString *rating = @"";
             NSString *icon = @"";
@@ -200,15 +359,15 @@
             //[result.imageView setImage:imgView.image];
             //[result addSubview:imgView];
             
-            UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-            [button addTarget:self action:@selector(recordActionPressed:) forControlEvents:UIControlEventTouchDown];
-            [button setImage:[UIImage imageNamed:@"record.png"] forState:UIControlStateNormal];
-            button.frame = CGRectMake(250.0f, 25.0f, 32.0f, 32.0f);
+            //UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+            //[button addTarget:self action:@selector(recordActionPressed:) forControlEvents:UIControlEventTouchDown];
+            //[button setImage:[UIImage imageNamed:@"record.png"] forState:UIControlStateNormal];
+            //button.frame = CGRectMake(250.0f, 25.0f, 32.0f, 32.0f);
             
             //need a much better way to pass this - dave
-            [button setTitle:[NSString stringWithFormat:@"%@",place.place_id] forState:UIControlStateDisabled];
+            //[button setTitle:[NSString stringWithFormat:@"%@",place.place_id] forState:UIControlStateDisabled];
             
-            [result addSubview:button];
+            //[result addSubview:button];
             
             
             NSString *placeString  = [NSString stringWithFormat:@"http://upbeat.azurewebsites.net/api/beats/getbeatbygoogleid/%@",place.place_id];
@@ -273,7 +432,7 @@
 	//Get the superview from this button which will be our cell
 	UITableViewCell *owningCell = (UITableViewCell*)[sender superview];
 	
-	NSIndexPath *pathToCell = [self.myTableView indexPathForCell:owningCell];
+	NSIndexPath *pathToCell = [self.myTableListView indexPathForCell:owningCell];
     
     
     //really ugly, need a better way to maintain googleid of button pressed
@@ -314,13 +473,27 @@
 
 }
 
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    UIView *selectedBackgroundViewForCell = [UIView new];
+    [selectedBackgroundViewForCell setBackgroundColor:self.selectedColor];
+    
+    cell.selectedBackgroundView = selectedBackgroundViewForCell;
+}
+
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath  {
     
-    if ([tableView isEqual:self.myTableView]) {
+    if ([tableView isEqual:self.myTableListView]) {
         //NSLog(@"%@", [NSString stringWithFormat:@"Cell %ld in Section %ld is selected", (long)indexPath.row, (long)indexPath.section]);
         UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-        cell.contentView.backgroundColor = [UIColor colorWithRed:226.0/255.0 green:231.0/255.0 blue:238.0/255.0 alpha:1];        
+        
+        UIView *selectedBackgroundViewForCell = [UIView new];
+        [selectedBackgroundViewForCell setBackgroundColor:self.selectedColor];
+        
+        cell.selectedBackgroundView = selectedBackgroundViewForCell;
+        //cell.contentView.backgroundColor = self.selectedColor;
+        //cell.backgroundColor = self.selectedColor;
         AmbiAppDelegate *appDelegate=(AmbiAppDelegate *)[UIApplication sharedApplication].delegate;
         NSString *gKey = self.key;
         AmbiPlace *place = [appDelegate.places objectAtIndex:indexPath.row];
@@ -395,9 +568,22 @@
     return [self.row_height integerValue];
 }
 
+// Back Button is pressed from Search View
+- (void) BackFromSearch:(UIButton*)paramSender{
+    // hide the keyboard
+    //[self.view endEditing:YES];
+    [self.mySearchViewSearchText resignFirstResponder];
+    [self.view bringSubviewToFront:self.myTopView ];
+}
+
+// Back Button is pressed from the Table List View
+- (void) BackFromTableList:(UIButton*)paramSender{
+    //[self.view endEditing:YES];
+    [self.view bringSubviewToFront:self.myTopView ];
+}
 
 //- (IBAction)Locate:(UIButton*)sender {
-- (void) buttonIspressed:(UIButton*)paramSender{
+- (void) LocationButtonIspressed:(UIButton*)paramSender{
     NSLog(@"Current Location is \n");
     
     AmbiAppDelegate *appDelegate=(AmbiAppDelegate *)[UIApplication sharedApplication].delegate;
@@ -480,7 +666,8 @@
             
         }
         
-        [self.myTableView reloadData];
+        [self.view bringSubviewToFront:self.myListView];
+        [self.myTableListView reloadData];
         
     } failure:nil];
 
